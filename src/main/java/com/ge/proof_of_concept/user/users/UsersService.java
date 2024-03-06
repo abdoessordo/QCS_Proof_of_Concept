@@ -19,14 +19,16 @@ import java.util.Optional;
  * It manages the Users entity in the database and provides methods for CRUD operations
  *
  * Methods:
- *  - getUsers
- *  - addNewUser
- *  - deleteUser
- *  - getSoftDeletedUsers
- *  - restoreUser
+ * - getUsers
+ * - getSoftDeletedUsers
+ * - getUserBySSO
+ * - addNewUser
+ * - deleteUser
+ * - getSoftDeletedUsers
+ * - restoreUser
  *
- *  Author: Abdellah ESSORDO
- *  Created on: 03/03/2024
+ * Author: Abdellah ESSORDO
+ * Created on: 03/03/2024
  */
 @Service
 public class UsersService {
@@ -48,7 +50,8 @@ public class UsersService {
     }
 
     /**
-     * This method returns a list of non-soft deleted users
+     * This method returns a list of all non-soft deleted users
+     *
      * @return List<Users>
      */
     public List<Users> getUsers() {
@@ -62,6 +65,7 @@ public class UsersService {
 
     /**
      * This method returns a list of soft deleted users
+     *
      * @return List<Users>
      */
     public List<Users> getSoftDeletedUsers() {
@@ -69,7 +73,19 @@ public class UsersService {
     }
 
     /**
+     * This method returns a user by its SSO
+     *
+     * @param SSO: Long
+     * @return Users
+     */
+    public Users getUserBySSO(Long SSO) {
+        return usersRepository.findById(SSO)
+                .orElseThrow(() -> new IllegalStateException("user with id " + SSO + " does not exist"));
+    }
+
+    /**
      * This method is used to add a new user to the database
+     *
      * @param user: Users
      * @return void
      */
@@ -85,8 +101,9 @@ public class UsersService {
         // Add the user to the users table
         usersRepository.save(user);
 
+
         // Add the user to the users_history table
-        usersHistoryService.addNewUserHistory(
+        usersHistoryService.recordActionToHistory(
                 new UsersHistory(
                         user,
                         user.getName(),
@@ -127,7 +144,7 @@ public class UsersService {
             usersRepository.deleteById(SSO);
 
             // Add the user to the users_history table
-            usersHistoryService.addNewUserHistory(
+            usersHistoryService.recordActionToHistory(
                     new UsersHistory(
                             user,
                             user.getName(),
@@ -143,6 +160,7 @@ public class UsersService {
 
     /**
      * This method is used to restore a soft deleted user from the database
+     *
      * @param SSO
      * @return void
      */
@@ -178,7 +196,7 @@ public class UsersService {
             usersRepository.save(user);
 
             // add a new entry to the users_history table
-            usersHistoryService.addNewUserHistory(
+            usersHistoryService.recordActionToHistory(
                     new UsersHistory(
                             user,
                             user.getName(),

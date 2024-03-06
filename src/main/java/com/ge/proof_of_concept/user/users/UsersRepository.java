@@ -1,11 +1,9 @@
 package com.ge.proof_of_concept.user.users;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.Optional;
 
 /**
  * This interface is a repository for the Users entity
@@ -20,6 +18,6 @@ import java.util.Optional;
 @Repository
 public interface UsersRepository extends JpaRepository<Users, Long> {
 
-    // Find all soft deleted users
+    // This method returns a list of soft deleted users
     List<Users> findByDeletedAtIsNotNull();
 }

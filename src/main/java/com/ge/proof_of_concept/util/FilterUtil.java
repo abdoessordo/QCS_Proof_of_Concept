@@ -17,9 +17,6 @@ public class FilterUtil {
 
     public static <T extends BaseEntity> void applyDeletedFilter(Session session, Class<T> entityClass) {
         String filterName = buildFilterName(entityClass);
-        System.out.println("===================================");
-        System.out.println("Filter name: " + filterName);
-        System.out.println("===================================");
         if (session != null) {
             Filter filter = session.enableFilter(filterName);
             if (filter != null) {

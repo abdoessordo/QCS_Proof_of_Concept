@@ -1,10 +1,9 @@
 package com.ge.proof_of_concept.catalog.product;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
+import com.ge.proof_of_concept.util.BaseEntity;
+import jakarta.persistence.*;
 import jakarta.persistence.Table;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
+import org.hibernate.annotations.*;
 
 import java.time.LocalDateTime;
 
@@ -14,15 +13,15 @@ import java.time.LocalDateTime;
  * It manages the Product entity in the database and provides methods for CRUD operations
  *
  * Fields:
- *      _id: Long, PK
- *      name: String
- *      price: Double
- *      deleted_at: LocalDateTime
+ * _id: Long, PK
+ * name: String
+ * price: Double
+ * deleted_at: LocalDateTime
  *
  * Methods:
- *    - Constructors
- *    - Getters and Setters
- *    - toString
+ * - Constructors
+ * - Getters and Setters
+ * - toString
  *
  * Author: Abdellah ESSORDO
  * Date: 03/03/2024
@@ -30,16 +29,24 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "product")
 @SQLDelete(sql = "UPDATE product SET deleted_at = NOW() WHERE _id = ?")
-@Where(clause = "deleted_at IS NULL")
-public class Product {
+@FilterDef(name = "deletedProductFilter", parameters = @ParamDef(name = "includeDeleted", type = boolean.class))
+@Filter(name = "deletedProductFilter", condition = "deleted_at IS NULL")
+public class Product extends BaseEntity {
 
     @Id
+    @SequenceGenerator(
+            name = "product_sequence",
+            sequenceName = "product_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "product_sequence"
+    )
     private Long _id;
     private String name;
     private Double price;
 
-    // Soft delete
-    private LocalDateTime deleted_at = null;
 
     //==================================================================================================================
     // Constructors
@@ -48,13 +55,14 @@ public class Product {
     /**
      * Creates a new Product object with no parameters
      */
-    public Product() {}
+    public Product() {
+    }
 
     /**
      * Creates a new Product object with the given parameters
      *
-     * @param _id: Long
-     * @param name: String
+     * @param _id:   Long
+     * @param name:  String
      * @param price: Double
      */
     public Product(Long _id, String name, Double price) {
@@ -66,7 +74,7 @@ public class Product {
     /**
      * Creates a new Product object with the given parameters
      *
-     * @param name: String
+     * @param name:  String
      * @param price: Double
      */
     public Product(String name, Double price) {
@@ -104,14 +112,6 @@ public class Product {
         this.price = price;
     }
 
-    public LocalDateTime getDeleted_at() {
-        return deleted_at;
-    }
-
-    public void setDeleted_at(LocalDateTime deleted_at) {
-        this.deleted_at = deleted_at;
-    }
-
     //================================================================================================
     // End of Getters and Setters
     //================================================================================================
@@ -123,7 +123,6 @@ public class Product {
                 "_id=" + _id +
                 ", name='" + name + '\'' +
                 ", price=" + price +
-                ", deleted_at=" + deleted_at +
                 '}';
     }
 }

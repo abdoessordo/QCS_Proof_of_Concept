@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 /**
  * This class is a model for the UsersHistory entity
  * It manages the UsersHistory entity in the database and provides methods for CRUD operations
- * 
+ *
  * This entity is a backup of the Product entity, and servers as a history of the Product entity
  * It keeps track of the changes made to the Product entity, and the users who made the changes
- * 
+ *
  * Fields:
  * _id: Long, PK
  * user_SSO: Long, FK
@@ -20,7 +20,7 @@ import java.time.LocalDateTime;
  * updated_by: User, FK
  * updated_at: LocalDateTime
  * action: Enum (CREATED, UPDATED, DELETED, RESTORED)
- * 
+ *
  * Methods:
  * - Constructors
  * - Getters and Setters
@@ -177,8 +177,9 @@ public class UsersHistory {
 
     @PostLoad
     public void fillTransient() {
-        // Fill the transient field with the enum description
-        this.actionDescription = this.action;
+        if (action != null) {
+            this.actionDescription = HistoryAction.valueOf(action.name());
+        }
     }
 
     @Override

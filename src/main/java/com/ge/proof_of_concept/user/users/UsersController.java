@@ -26,7 +26,7 @@ public class UsersController {
 
     /**
      * TODO:
-     *      Return JSON response for all the endpoints [ ]
+     *    Return JSON response for all the endpoints [ ]
      */
 
     private final UsersService usersService;
@@ -39,14 +39,27 @@ public class UsersController {
     /**
      * GET /api/v1/users
      *
-     * This method returns a list of all users
+     * This method returns a list of all non-soft deleted users
      *
-     * @param void
+     * @param
      * @return List<Users> - a list of all users
      */
     @GetMapping
     public List<Users> getUsers() {
         return usersService.getUsers();
+    }
+
+    /**
+     * GET /api/v1/users/deleted
+     *
+     * This method returns a list of all soft deleted users
+     *
+     * @param
+     * @return List<Users> - a list of all soft deleted users
+     */
+    @GetMapping(path = "/deleted")
+    public List<Users> getAllSoftDeletedUsers() {
+        return usersService.getSoftDeletedUsers();
     }
 
     /**
@@ -93,16 +106,5 @@ public class UsersController {
 
     }
 
-    /**
-     * GET /api/v1/users/deleted
-     *
-     * This method returns a list of all soft deleted users
-     *
-     * @param void
-     * @return List<Users> - a list of all soft deleted users
-     */
-    @GetMapping(path = "/deleted")
-    public List<Users> getAllSoftDeletedUsers() {
-        return usersService.getSoftDeletedUsers();
-    }
+
 }

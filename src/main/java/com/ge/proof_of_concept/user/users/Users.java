@@ -9,8 +9,6 @@ import org.hibernate.annotations.FilterDef;
 import org.hibernate.annotations.ParamDef;
 import org.hibernate.annotations.SQLDelete;
 
-import java.time.LocalDateTime;
-
 /**
  * This class is a model for the Users entity
  * It manages the Users entity in the database and provides methods for CRUD operations
@@ -56,23 +54,19 @@ public class Users extends BaseEntity {
      *
      * @param _SSO: Long
      * @param name: String
-     * @param deletedAt: LocalDateTime
      */
-    public Users(Long _SSO, String name, LocalDateTime deletedAt) {
+    public Users(Long _SSO, String name) {
         this._SSO = _SSO;
         this.name = name;
-        this.deletedAt = deletedAt;
     }
 
     /**
      * Creates a new User object with the given parameters
      *
      * @param name: String
-     * @param deletedAt: LocalDateTime
      */
-    public Users(String name, LocalDateTime deletedAt) {
+    public Users(String name) {
         this.name = name;
-        this.deletedAt = deletedAt;
     }
 
     //==================================================================================================================

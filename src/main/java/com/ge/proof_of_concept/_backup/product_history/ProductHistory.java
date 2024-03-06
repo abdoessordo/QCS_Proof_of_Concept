@@ -2,6 +2,7 @@ package com.ge.proof_of_concept._backup.product_history;
 
 import com.ge.proof_of_concept.catalog.product.Product;
 import com.ge.proof_of_concept.user.users.Users;
+import com.ge.proof_of_concept.util.HistoryAction;
 import jakarta.persistence.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
@@ -16,18 +17,18 @@ import java.time.LocalDateTime;
  * It keeps track of the changes made to the Product entity, and the users who made the changes
  *
  * Fields:
- *     _id: Long, PK
- *     product_id: Long, FK
- *     name: String
- *     price: Double
- *     updated_by: User, FK
- *     updated_at: LocalDateTime
- *     deleted_at: LocalDateTime
+ * _id: Long, PK
+ * product_id: Long, FK
+ * name: String
+ * price: Double
+ * updated_by: User, FK
+ * updated_at: LocalDateTime
+ * deleted_at: LocalDateTime
  *
  * Methods:
- *   - Constructors
- *   - Getters and Setters
- *   - toString
+ * - Constructors
+ * - Getters and Setters
+ * - toString
  */
 
 @Entity
@@ -37,6 +38,15 @@ import java.time.LocalDateTime;
 public class ProductHistory {
 
     @Id
+    @SequenceGenerator(
+            name = "product_history_sequence",
+            sequenceName = "product_history_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "product_history_sequence"
+    )
     private Long _id;
 
     @ManyToOne
@@ -49,7 +59,10 @@ public class ProductHistory {
     @JoinColumn(name = "updated_by", referencedColumnName = "_SSO")
     private Users updated_by;
     private LocalDateTime updated_at;
-    private LocalDateTime deleted_at = null;
+    private HistoryAction action;
+    @Enumerated(EnumType.STRING)
+    @Transient
+    private HistoryAction actionDescription;
 
     //==================================================================================================================
     // Constructors
@@ -64,41 +77,41 @@ public class ProductHistory {
     /**
      * Creates a new ProductHistory object with the given parameters
      *
-     * @param _id: Long
-     * @param product: Product
-     * @param name: String
-     * @param price: Double
+     * @param _id:        Long
+     * @param product:    Product
+     * @param name:       String
+     * @param price:      Double
      * @param updated_by: User
      * @param updated_at: LocalDateTime
-     * @param deleted_at: LocalDateTime
+     * @param action:     HistoryAction
      */
-    public ProductHistory(Long _id, Product product, String name, Double price, Users updated_by, LocalDateTime updated_at, LocalDateTime deleted_at) {
+    public ProductHistory(Long _id, Product product, String name, Double price, Users updated_by, LocalDateTime updated_at, HistoryAction action) {
         this._id = _id;
         this.product = product;
         this.name = name;
         this.price = price;
         this.updated_by = updated_by;
         this.updated_at = updated_at;
-        this.deleted_at = deleted_at;
+        this.action = action;
     }
 
     /**
      * Creates a new ProductHistory object with the given parameters
      *
-     * @param product: Product
-     * @param name: String
-     * @param price: Double
+     * @param product:    Product
+     * @param name:       String
+     * @param price:      Double
      * @param updated_by: User
      * @param updated_at: LocalDateTime
-     * @param deleted_at: LocalDateTime
+     * @param action:     HistoryAction
      */
-    public ProductHistory(Product product, String name, Double price, Users updated_by, LocalDateTime updated_at, LocalDateTime deleted_at) {
+    public ProductHistory(Product product, String name, Double price, Users updated_by, LocalDateTime updated_at, HistoryAction action) {
         this.product = product;
         this.name = name;
         this.price = price;
         this.updated_by = updated_by;
         this.updated_at = updated_at;
-        this.deleted_at = deleted_at;
+        this.action = action;
     }
 
     //==================================================================================================================
@@ -155,18 +168,31 @@ public class ProductHistory {
         this.updated_at = updated_at;
     }
 
-    public LocalDateTime getDeleted_at() {
-        return deleted_at;
+    public HistoryAction getAction() {
+        return action;
     }
 
-    public void setDeleted_at(LocalDateTime deleted_at) {
-        this.deleted_at = deleted_at;
+    public void setAction(HistoryAction action) {
+        this.action = action;
     }
 
+    public HistoryAction getActionDescription() {
+        return actionDescription;
+    }
+
+    public void setActionDescription(HistoryAction actionDescription) {
+        this.actionDescription = actionDescription;
+    }
     //==================================================================================================================
     // End of Getters and Setters
     //==================================================================================================================
 
+    @PostLoad
+    private void fillTransient() {
+        if (action != null) {
+            this.actionDescription = HistoryAction.valueOf(action.name());
+        }
+    }
 
     @Override
     public String toString() {
@@ -177,7 +203,6 @@ public class ProductHistory {
                 ", price=" + price +
                 ", updated_by=" + updated_by +
                 ", updated_at=" + updated_at +
-                ", deleted_at=" + deleted_at +
                 '}';
     }
 }
