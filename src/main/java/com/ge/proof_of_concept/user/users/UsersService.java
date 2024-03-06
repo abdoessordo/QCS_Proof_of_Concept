@@ -2,6 +2,7 @@ package com.ge.proof_of_concept.user.users;
 
 import com.ge.proof_of_concept._backup.users_history.UsersHistory;
 import com.ge.proof_of_concept._backup.users_history.UsersHistoryService;
+import com.ge.proof_of_concept.user.users.dto.UserDto;
 import com.ge.proof_of_concept.util.FilterUtil;
 import com.ge.proof_of_concept.util.HistoryAction;
 import jakarta.persistence.EntityManager;
@@ -12,6 +13,7 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 /**
@@ -54,13 +56,24 @@ public class UsersService {
      *
      * @return List<Users>
      */
-    public List<Users> getUsers() {
+    public List<UserDto> getUsers() {
         // The two lines below are used to apply the deleted filter to the users table,
         // so that only the non-soft deleted users are returned
         Session session = entityManager.unwrap(Session.class);
         FilterUtil.applyDeletedFilter(session, Users.class);
 
-        return usersRepository.findAll();
+        List<Users> users = usersRepository.findAll();
+
+        // Map User entities to UserDto objects
+        return users.stream()
+                .map(user -> {
+                    UserDto userDto = new UserDto();
+                    userDto.setSSO(user.get_SSO());
+                    userDto.setName(user.getName());
+                    // Map other fields as needed
+                    return userDto;
+                })
+                .toList();
     }
 
     /**

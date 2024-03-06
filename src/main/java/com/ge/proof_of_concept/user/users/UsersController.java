@@ -1,7 +1,11 @@
 package com.ge.proof_of_concept.user.users;
 
 
+import com.ge.proof_of_concept.user.users.dto.UserDto;
+import com.ge.proof_of_concept.util.dto.ResponseVO;
+import com.ge.proof_of_concept.util.dto.ResponseVOBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -45,8 +49,17 @@ public class UsersController {
      * @return List<Users> - a list of all users
      */
     @GetMapping
-    public List<Users> getUsers() {
-        return usersService.getUsers();
+    public ResponseEntity<ResponseVO<List<UserDto>>> getAllUsers() {
+        // Retreive all users
+        List<UserDto> users = usersService.getUsers();
+
+        // Construct the response object
+        ResponseVO<List<UserDto>> response = new ResponseVOBuilder<List<UserDto>>()
+                .success()
+                .addData(users)
+                .build();
+
+        return ResponseEntity.ok(response);
     }
 
     /**

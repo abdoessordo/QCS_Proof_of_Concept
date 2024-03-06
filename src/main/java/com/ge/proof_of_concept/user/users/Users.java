@@ -16,7 +16,6 @@ import org.hibernate.annotations.SQLDelete;
  * Fields:
  *     _SSO: Long, PK
  *     name: String
- *     deleted_at: LocalDateTime
  *
  * Methods:
  *   - Constructors
