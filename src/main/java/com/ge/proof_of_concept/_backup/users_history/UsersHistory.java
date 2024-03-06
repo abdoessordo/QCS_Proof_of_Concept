@@ -9,10 +9,10 @@ import java.time.LocalDateTime;
 /**
  * This class is a model for the UsersHistory entity
  * It manages the UsersHistory entity in the database and provides methods for CRUD operations
- * <p>
+ * 
  * This entity is a backup of the Product entity, and servers as a history of the Product entity
  * It keeps track of the changes made to the Product entity, and the users who made the changes
- * <p>
+ * 
  * Fields:
  * _id: Long, PK
  * user_SSO: Long, FK
@@ -20,11 +20,14 @@ import java.time.LocalDateTime;
  * updated_by: User, FK
  * updated_at: LocalDateTime
  * action: Enum (CREATED, UPDATED, DELETED, RESTORED)
- * <p>
+ * 
  * Methods:
  * - Constructors
  * - Getters and Setters
  * - toString
+ *
+ * Author: Abdellah ESSORDO
+ * Created on: 03/03/2024
  */
 @Entity
 @Table(name = "users_history")

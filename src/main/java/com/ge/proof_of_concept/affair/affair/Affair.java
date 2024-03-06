@@ -21,6 +21,9 @@ import java.time.LocalDateTime;
  *   - Constructors
  *   - Getters and Setters
  *   - toString
+ *
+ * Author: Abdellah ESSORDO
+ * Date: 03/03/2024
  */
 @Entity
 @Table(name = "affair")

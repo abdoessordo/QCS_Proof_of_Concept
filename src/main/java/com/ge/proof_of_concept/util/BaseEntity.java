@@ -8,12 +8,15 @@ import java.time.LocalDateTime;
  * This class acts as a base class for all other entities (User, Product, etc.).
  * It defines a common field deleted (boolean) to represent the deleted state.
  * It serves as a base class for all entities that need to be soft deleted.
- * <p>
+ *
  * Fields:
  * deleted: boolean
- * <p>
+ *
  * Methods:
  * Getters and Setters
+ *
+ * Author: Abdellah ESSORDO
+ * Date: 06/03/2024
  */
 
 @MappedSuperclass

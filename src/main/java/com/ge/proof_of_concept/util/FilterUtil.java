@@ -8,6 +8,9 @@ import org.hibernate.Session;
  * The method takes the session and entity class as parameters.
  * It dynamically builds the filter name based on the entity class name (e.g., "ProductDeletedFilter", "UserDeletedFilter").
  * It enables the filter and sets the `isDeleted` parameter to `true` (assuming filtering for deleted entities). Adjust this as needed.
+ *
+ * Author: Abdellah ESSORDO
+ * Date: 06/03/2024
  */
 
 public class FilterUtil {
