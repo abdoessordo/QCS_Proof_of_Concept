@@ -1,10 +1,14 @@
 package com.ge.proof_of_concept.user.users;
 
 
+import com.ge.proof_of_concept.user.users.dto.CreateUserRequest;
+import com.ge.proof_of_concept.user.users.dto.CreateUserResponse;
 import com.ge.proof_of_concept.user.users.dto.UserDto;
+import com.ge.proof_of_concept.util.dto.ResponseErrorVo;
 import com.ge.proof_of_concept.util.dto.ResponseVO;
 import com.ge.proof_of_concept.util.dto.ResponseVOBuilder;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -34,6 +38,7 @@ public class UsersController {
      */
 
     private final UsersService usersService;
+
     @Autowired
     public UsersController(UsersService usersService) {
         this.usersService = usersService;
@@ -50,16 +55,30 @@ public class UsersController {
      */
     @GetMapping
     public ResponseEntity<ResponseVO<List<UserDto>>> getAllUsers() {
-        // Retreive all users
-        List<UserDto> users = usersService.getUsers();
 
-        // Construct the response object
-        ResponseVO<List<UserDto>> response = new ResponseVOBuilder<List<UserDto>>()
-                .success()
-                .addData(users)
-                .build();
+        try {
 
-        return ResponseEntity.ok(response);
+            // Retreive all users
+            List<UserDto> users = usersService.getUsers();
+
+            // Construct the response object
+            ResponseVO<List<UserDto>> response = new ResponseVOBuilder<List<UserDto>>()
+                    .success()
+                    .addData(users)
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+
+            // Handle exceptions and return error response
+            ResponseErrorVo error = new ResponseErrorVo("INTERNAL_SERVER_ERROR", "Something went wrong");
+            ResponseVO<List<UserDto>> errorResponse = new ResponseVOBuilder<List<UserDto>>()
+                    .error(error)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+
     }
 
     /**
@@ -71,8 +90,32 @@ public class UsersController {
      * @return List<Users> - a list of all soft deleted users
      */
     @GetMapping(path = "/deleted")
-    public List<Users> getAllSoftDeletedUsers() {
-        return usersService.getSoftDeletedUsers();
+    public ResponseEntity<ResponseVO<List<UserDto>>> getAllSoftDeletedUsers() {
+
+        try {
+
+            // Retreive all soft deleted users
+            List<UserDto> users = usersService.getSoftDeletedUsers();
+
+            // Construct the response object
+            ResponseVO<List<UserDto>> response = new ResponseVOBuilder<List<UserDto>>()
+                    .success()
+                    .addData(users)
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+
+
+            // Handle exceptions and return error response
+            ResponseErrorVo error = new ResponseErrorVo("INTERNAL_SERVER_ERROR", "Something went wrong");
+            ResponseVO<List<UserDto>> errorResponse = new ResponseVOBuilder<List<UserDto>>()
+                    .error(error)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+
     }
 
     /**
@@ -81,12 +124,39 @@ public class UsersController {
      * This method adds a new user to the database,
      * and also adds a new entry to the users_history table
      *
-     * @param user: Users - the user to be added
+     * @param userRequest: Users - the user to be added
      * @return void
      */
     @PostMapping(path = "/add")
-    public void addNewUser(@RequestBody Users user) {
-        usersService.addNewUser(user);
+    public ResponseEntity<ResponseVO<CreateUserResponse>> addUser(@RequestBody CreateUserRequest userRequest) {
+
+        try {
+            // Add the user to the database
+            CreateUserResponse newUser = usersService.addNewUser(userRequest);
+
+            // Construct the response object
+            ResponseVO<CreateUserResponse> response = new ResponseVOBuilder<CreateUserResponse>()
+                    .success()
+                    .addMessage("User added successfully")
+                    .addData(newUser)
+                    .build();
+
+            return ResponseEntity.ok(response);
+        } catch (Exception e) {
+
+            System.out.println(e);
+
+
+            // Handle exceptions and return error response
+            ResponseErrorVo error = new ResponseErrorVo("INTERNAL_SERVER_ERROR", "Something went wrong");
+            ResponseVO<CreateUserResponse> errorResponse = new ResponseVOBuilder<CreateUserResponse>()
+                    .error(error)
+                    .build();
+
+            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body(errorResponse);
+        }
+
+
     }
 
     /**

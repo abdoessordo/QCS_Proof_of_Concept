@@ -2,6 +2,8 @@ package com.ge.proof_of_concept.user.users;
 
 import com.ge.proof_of_concept._backup.users_history.UsersHistory;
 import com.ge.proof_of_concept._backup.users_history.UsersHistoryService;
+import com.ge.proof_of_concept.user.users.dto.CreateUserRequest;
+import com.ge.proof_of_concept.user.users.dto.CreateUserResponse;
 import com.ge.proof_of_concept.user.users.dto.UserDto;
 import com.ge.proof_of_concept.util.FilterUtil;
 import com.ge.proof_of_concept.util.HistoryAction;
@@ -13,7 +15,6 @@ import org.springframework.stereotype.Service;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
-import java.util.stream.Collectors;
 
 
 /**
@@ -62,18 +63,9 @@ public class UsersService {
         Session session = entityManager.unwrap(Session.class);
         FilterUtil.applyDeletedFilter(session, Users.class);
 
-        List<Users> users = usersRepository.findAll();
 
         // Map User entities to UserDto objects
-        return users.stream()
-                .map(user -> {
-                    UserDto userDto = new UserDto();
-                    userDto.setSSO(user.get_SSO());
-                    userDto.setName(user.getName());
-                    // Map other fields as needed
-                    return userDto;
-                })
-                .toList();
+        return UserDto.fromUsers(usersRepository.findAll());
     }
 
     /**
@@ -81,8 +73,10 @@ public class UsersService {
      *
      * @return List<Users>
      */
-    public List<Users> getSoftDeletedUsers() {
-        return usersRepository.findByDeletedAtIsNotNull();
+    public List<UserDto> getSoftDeletedUsers() {
+
+        // Map User entities to UserDto objects
+        return UserDto.fromUsers(usersRepository.findByDeletedAtIsNotNull());
     }
 
     /**
@@ -102,7 +96,7 @@ public class UsersService {
      * @param user: Users
      * @return void
      */
-    public void addNewUser(Users user) {
+    public CreateUserResponse addNewUser(CreateUserRequest userRequest) {
         /**
          * TODO:
          *  Add validation for the user object [ ]
@@ -111,20 +105,34 @@ public class UsersService {
          *  Add the user to the users_history table [x]
          */
 
+        System.out.println("==================================== ");
+        System.out.println("userRequest: " + userRequest);
+        System.out.println("==================================== ");
+
+        // Create a new user object
+        Users newUser = new Users(userRequest.get_SSO(), userRequest.getName());
+
         // Add the user to the users table
-        usersRepository.save(user);
+        usersRepository.save(newUser);
 
 
         // Add the user to the users_history table
         usersHistoryService.recordActionToHistory(
                 new UsersHistory(
-                        user,
-                        user.getName(),
-                        user, // updated_by, Should be the user who is currently logged in
+                        newUser,
+                        newUser.getName(),
+                        newUser, // updated_by, Should be the user who is currently logged in
                         LocalDateTime.now(),
                         HistoryAction.CREATED
                 )
         );
+
+        // Create a new CreateUserResponse object
+        CreateUserResponse response = new CreateUserResponse();
+        response.set_SSO(newUser.get_SSO());
+        response.setName(newUser.getName());
+
+        return response;
     }
 
 

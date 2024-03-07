@@ -1,13 +1,13 @@
 package com.ge.proof_of_concept.user.users.dto;
 
 /**
- * This class is the Response Class for the CreateUser endpoint.
- * All user creation response should be made using this class and its fields.
+ * This class is the Request Class for the CreateUser endpoint.
+ * All user creation requests should be made using this class and its fields.
  *
  * Author: Abdellah ESSORDO
  * Date: 07/03/2024
  */
-public class CreateUserResponse {
+public class CreateUserRequest {
     private Long _SSO;
     private String name;
 
@@ -36,7 +36,7 @@ public class CreateUserResponse {
     //==================================================================================================================
     @Override
     public String toString() {
-        return "CreateUserResponse{" +
+        return "CreateUserRequest{" +
                 "SSO=" + _SSO +
                 ", name='" + name + '\'' +
                 '}';

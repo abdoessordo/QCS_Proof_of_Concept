@@ -1,5 +1,15 @@
 package com.ge.proof_of_concept.util.dto;
 
+
+/**
+ * This class is a builder for the ResponseVO class.
+ * It implements the Builder Pattern.
+ *
+ * @param <T>
+ *
+ * Author: Abdellah ESSORDO
+ * Date: 06/03/2024
+ */
 public class ResponseVOBuilder<T> {
     private final ResponseVO<T> responseVO = new ResponseVO<>();
 
@@ -12,6 +22,7 @@ public class ResponseVOBuilder<T> {
         responseVO.setStatus(status);
         return this;
     }
+
 
     public ResponseVOBuilder<T> success() {
         return new ResponseVOBuilder<T>().result("Succeed").status("200");
@@ -34,6 +45,12 @@ public class ResponseVOBuilder<T> {
         responseVO.setStatus("200");
         return this;
     }
+
+    public ResponseVOBuilder<T> addMessage(final String message) {
+        responseVO.setMessage(message);
+        return this;
+    }
+
 
     public ResponseVO<T> build() {
         return responseVO;
