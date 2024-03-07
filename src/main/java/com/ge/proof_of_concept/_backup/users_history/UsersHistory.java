@@ -55,7 +55,7 @@ public class UsersHistory {
     @ManyToOne
     @JoinColumn(name = "updated_by", referencedColumnName = "_SSO")
     private Users updated_by;
-    private LocalDateTime updated_at;
+    private LocalDateTime updatedAt;
     private HistoryAction action;
     @Enumerated(EnumType.STRING)
     @Transient
@@ -86,7 +86,7 @@ public class UsersHistory {
         this.user = user;
         this.name = name;
         this.updated_by = updated_by;
-        this.updated_at = updated_at;
+        this.updatedAt = updated_at;
         this.action = action;
     }
 
@@ -104,7 +104,7 @@ public class UsersHistory {
         this.user = user;
         this.name = name;
         this.updated_by = updated_by;
-        this.updated_at = updated_at;
+        this.updatedAt = updated_at;
         this.action = action;
     }
 
@@ -147,12 +147,12 @@ public class UsersHistory {
         this.updated_by = updated_by;
     }
 
-    public LocalDateTime getUpdated_at() {
-        return updated_at;
+    public LocalDateTime getUpdatedAt() {
+        return updatedAt;
     }
 
-    public void setUpdated_at(LocalDateTime updated_at) {
-        this.updated_at = updated_at;
+    public void setUpdatedAt(LocalDateTime updated_at) {
+        this.updatedAt = updated_at;
     }
 
     public HistoryAction getAction() {
@@ -189,7 +189,7 @@ public class UsersHistory {
                 ", user=" + user +
                 ", name='" + name + '\'' +
                 ", updated_by=" + updated_by +
-                ", updated_at=" + updated_at +
+                ", updated_at=" + updatedAt +
                 ", action=" + action +
                 '}';
     }
